@@ -1,21 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    
+    <!-- General properties -->
     <groupId>com.github.agadar</groupId>
-    <artifactId>RMBAnalyzer</artifactId>
+    <artifactId>nationstates-rmb-statistics</artifactId>
     <version>1.0.0</version>
-    <packaging>jar</packaging>
+    <packaging>jar</packaging>   
+    <name>NationStates RMB Statistics</name>
+    <description>Returns statistics on NationStates regions' regional message boards.</description>
+    <url>https://github.com/Agadar/NationStates-RMB-Analyzer</url>
+    
+    <!-- License -->
+    <licenses>
+        <license>
+            <name>The Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+    
+    <!-- Developer info -->
+    <developers>
+        <developer>
+            <name>Agadar</name>
+            <email></email>
+            <organization></organization>
+            <organizationUrl>https://github.com/Agadar</organizationUrl>
+        </developer>
+    </developers>
+    
+    <!-- Dependencies -->
     <dependencies>
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>com.github.agadar</groupId>
             <artifactId>nationstates-api-java-wrapper</artifactId>
-            <version>1.2.0</version>
+            <version>1.2.2</version>
         </dependency>
     </dependencies>
+    
+    <!-- Other properties -->
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
-    <name>RMBAnalyzer</name>
 </project>
