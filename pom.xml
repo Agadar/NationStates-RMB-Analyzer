@@ -31,6 +31,7 @@
     
     <!-- Dependencies -->
     <dependencies>
+        <!-- https://mvnrepository.com/artifact/com.github.agadar/nationstates-api-java-wrapper -->
         <dependency>
             <groupId>com.github.agadar</groupId>
             <artifactId>nationstates-api-java-wrapper</artifactId>
