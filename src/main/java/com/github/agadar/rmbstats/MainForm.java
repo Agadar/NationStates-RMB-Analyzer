@@ -102,7 +102,7 @@ public class MainForm extends javax.swing.JFrame
                 .addContainerGap())
         );
 
-        PanelFromDate.setBorder(javax.swing.BorderFactory.createTitledBorder("From date"));
+        PanelFromDate.setBorder(javax.swing.BorderFactory.createTitledBorder("From date (inclusive)"));
         PanelFromDate.setToolTipText("");
 
         FTextFieldFromDate.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.DateFormatter(new java.text.SimpleDateFormat("dd-MM-yyyy"))));
@@ -125,7 +125,7 @@ public class MainForm extends javax.swing.JFrame
                 .addContainerGap())
         );
 
-        PanelToDate.setBorder(javax.swing.BorderFactory.createTitledBorder("To date"));
+        PanelToDate.setBorder(javax.swing.BorderFactory.createTitledBorder("To date (exclusive)"));
         PanelToDate.setToolTipText("");
 
         FTextFieldToDate.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.DateFormatter(new java.text.SimpleDateFormat("dd-MM-yyyy"))));
