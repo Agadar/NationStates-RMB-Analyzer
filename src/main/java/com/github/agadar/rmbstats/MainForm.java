@@ -1,5 +1,8 @@
 package com.github.agadar.rmbstats;
 
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -8,16 +11,15 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 /**
  * NationStates RMB Statistics application entry point and main GUI.
- * 
+ *
  * @author Agadar <https://github.com/Agadar/>
  */
-public class MainForm extends javax.swing.JFrame
-{
+public class MainForm extends javax.swing.JFrame {
+
     /**
      * Creates new form EmbassyCheckerForm
      */
-    public MainForm()
-    {
+    public MainForm() {
         initComponents();
     }
 
@@ -77,12 +79,17 @@ public class MainForm extends javax.swing.JFrame
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        PanelReport.setBorder(javax.swing.BorderFactory.createTitledBorder("Report (copypaste to notepad for easier reading)"));
+        PanelReport.setBorder(javax.swing.BorderFactory.createTitledBorder("Report (click to copy)"));
 
         TxtAreaReport.setEditable(false);
         TxtAreaReport.setColumns(20);
         TxtAreaReport.setFont(new java.awt.Font("Monospaced", 0, 10)); // NOI18N
         TxtAreaReport.setRows(5);
+        TxtAreaReport.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                TxtAreaReportMousePressed(evt);
+            }
+        });
         ScrollPaneReport.setViewportView(TxtAreaReport);
 
         javax.swing.GroupLayout PanelReportLayout = new javax.swing.GroupLayout(PanelReport);
@@ -210,42 +217,50 @@ public class MainForm extends javax.swing.JFrame
     }// </editor-fold>//GEN-END:initComponents
 
     /**
-     * Called when start button is clicked. 
-     * 
-     * @param evt 
+     * Called when start button is clicked.
+     *
+     * @param evt
      */
     private void BtnStartActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_BtnStartActionPerformed
     {//GEN-HEADEREND:event_BtnStartActionPerformed
-        final String region = TxtFieldRegion.getText();       
+        final String region = TxtFieldRegion.getText();
         final long epochFrom = ((Date) FTextFieldFromDate.getValue()).toInstant().toEpochMilli() / 1000;
         final long epochTo = ((Date) FTextFieldToDate.getValue()).toInstant().toEpochMilli() / 1000;
         final int maxResults = (int) Math.abs((long) FTextFieldMaxResults.getValue());
         TxtAreaReport.setText(RmbStatistics.generateReport(region, maxResults, epochFrom, epochTo));
     }//GEN-LAST:event_BtnStartActionPerformed
-   
+
+    /**
+     * Called when the report text area has been clicked. Copies its contents to
+     * the clipboard.
+     *
+     * @param evt
+     */
+    private void TxtAreaReportMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TxtAreaReportMousePressed
+        final Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        final StringSelection strSel = new StringSelection(TxtAreaReport.getText());
+        clipboard.setContents(strSel, strSel);
+    }//GEN-LAST:event_TxtAreaReportMousePressed
+
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[])
-    {
+    public static void main(String args[]) {
         // Set-up graphical form.      
-        try
-        {
+        try {
             // Set cross-platform look&feel.
             UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
 
             // Create and display the form.
-            java.awt.EventQueue.invokeLater(() -> 
-            {
+            java.awt.EventQueue.invokeLater(()
+                    -> {
                 final MainForm form = new MainForm();
                 form.setLocationRelativeTo(null);
                 form.setVisible(true);
             });
-        }
-        catch (ClassNotFoundException | InstantiationException |
+        } catch (ClassNotFoundException | InstantiationException |
                 IllegalAccessException |
-                UnsupportedLookAndFeelException ex)
-        {
+                UnsupportedLookAndFeelException ex) {
             Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
