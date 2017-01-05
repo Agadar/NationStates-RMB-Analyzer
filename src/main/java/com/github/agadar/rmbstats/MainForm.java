@@ -152,7 +152,7 @@ public class MainForm extends javax.swing.JFrame
         PanelMaxResults.setToolTipText("");
 
         FTextFieldMaxResults.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0"))));
-        FTextFieldMaxResults.setValue(0L);
+        FTextFieldMaxResults.setValue(100L);
 
         javax.swing.GroupLayout PanelMaxResultsLayout = new javax.swing.GroupLayout(PanelMaxResults);
         PanelMaxResults.setLayout(PanelMaxResultsLayout);
