@@ -15,7 +15,3 @@ This program uses my own [NationStates API Java Wrapper](https://github.com/Agad
 ## Screenshot
 
 ![images/Screenshot Regional Rankings GUI.png](images/Screenshot Regional Rankings GUI.png)
-
-## Links
-
-[NationStates forum thread](https://forum.nationstates.net/viewtopic.php?f=15&t=388960)
