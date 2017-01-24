@@ -4,12 +4,12 @@
     
     <!-- General properties -->
     <groupId>com.github.agadar</groupId>
-    <artifactId>nationstates-rmb-statistics</artifactId>
+    <artifactId>nationstates-regional-rankings</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>   
-    <name>NationStates RMB Statistics</name>
+    <name>NationStates Regional Rankings</name>
     <description>Returns statistics on NationStates regions' regional message boards.</description>
-    <url>https://github.com/Agadar/NationStates-RMB-Analyzer</url>
+    <url>https://github.com/Agadar/NationStates-Regional-Rankings</url>
     
     <!-- License -->
     <licenses>
@@ -38,6 +38,36 @@
             <version>1.2.2</version>
         </dependency>
     </dependencies>
+    
+    <!-- Plugins -->
+    <build>
+        <plugins>
+            <plugin>
+                <!-- Plugin for building an executable .jar with dependencies -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.6</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>attached</goal>
+                        </goals>
+                        <phase>package</phase>
+                        <configuration>
+                            <descriptorRefs>
+                                <descriptorRef>jar-with-dependencies</descriptorRef>
+                            </descriptorRefs>
+                            <archive>
+                                <manifest>
+                                    <mainClass>com.github.agadar.nsregionalrankings.MainForm</mainClass>
+                                </manifest>
+                            </archive>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
     
     <!-- Other properties -->
     <properties>

@@ -1,4 +1,4 @@
-package com.github.agadar.rmbstats;
+package com.github.agadar.nsregionalrankings;
 
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;

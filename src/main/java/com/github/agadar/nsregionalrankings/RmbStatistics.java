@@ -1,4 +1,4 @@
-package com.github.agadar.rmbstats;
+package com.github.agadar.nsregionalrankings;
 
 import com.github.agadar.nsapi.NSAPI;
 import com.github.agadar.nsapi.domain.region.MostLikedRank;
