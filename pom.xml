@@ -8,7 +8,7 @@
     <version>1.0.0</version>
     <packaging>jar</packaging>   
     <name>NationStates Regional Rankings</name>
-    <description>Returns statistics on NationStates regions' regional message boards.</description>
+    <description>Generates nation rankings based on a region's statistics, mostly pertaining its message board.</description>
     <url>https://github.com/Agadar/NationStates-Regional-Rankings</url>
     
     <!-- License -->
