@@ -3,6 +3,7 @@ package com.github.agadar.rmbstats;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -136,7 +137,8 @@ public class MainForm extends javax.swing.JFrame {
         PanelToDate.setToolTipText("");
 
         FTextFieldToDate.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.DateFormatter(new java.text.SimpleDateFormat("dd-MM-yyyy"))));
-        FTextFieldToDate.setValue(new Date());
+        FTextFieldToDate.setValue(TodayPlusOne()
+        );
 
         javax.swing.GroupLayout PanelToDateLayout = new javax.swing.GroupLayout(PanelToDate);
         PanelToDate.setLayout(PanelToDateLayout);
@@ -263,6 +265,17 @@ public class MainForm extends javax.swing.JFrame {
                 UnsupportedLookAndFeelException ex) {
             Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    /**
+     * Simple utility function for getting today's date plus one day.
+     * @return Today's date, plus one day.
+     */
+    private static Date TodayPlusOne() {
+        Calendar c = Calendar.getInstance(); 
+        c.setTime(new Date()); 
+        c.add(Calendar.DATE, 1);
+        return c.getTime();
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

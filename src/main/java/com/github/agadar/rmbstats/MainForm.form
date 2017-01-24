@@ -254,7 +254,7 @@
               <Format format="dd-MM-yyyy" subtype="-1" type="1"/>
             </Property>
             <Property name="value" type="java.lang.Object" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-              <Connection code="new Date()" type="code"/>
+              <Connection code="TodayPlusOne()&#xa;" type="code"/>
             </Property>
           </Properties>
         </Component>

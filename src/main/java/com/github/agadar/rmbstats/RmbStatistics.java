@@ -10,7 +10,6 @@ import com.github.agadar.nsapi.query.RegionQuery;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -94,21 +93,28 @@ public final class RmbStatistics {
      * @return The generated report.
      */
     private static String mostLikesPerPost(Region region, int maxResults) {
+        final int minimumNrOfPosts = 10;    // The minimum # of posts a nation must have in order
+                                            // to be included in this ranking.                                           
         String toReturn = "%n--------Most Likes Per Post On Average--------%n";
-        final Map<String, Integer> numberOfPosts = new HashMap<>();
+        toReturn += "(Includes only nations with at least " + minimumNrOfPosts + " posts)%n";
+        final Map<String, Integer> likes = new HashMap<>();
         final Map<String, Float> avgLikesPerPost = new HashMap<>();
-
-        // Start by mapping the numberOfPosts.
-        region.MostPostsRanks.stream().forEach((rank) -> {
-            numberOfPosts.put(rank.Name, rank.Posts);
-        });
-
-        // Now iterate over the likes received and fill avgLikesPerPost.
+        
+        // Start by mapping the likes.
         region.MostLikesRanks.stream().forEach((rank) -> {
-            float posts = numberOfPosts.get(rank.Name);
-            float likes = rank.Likes;
-            avgLikesPerPost.put(rank.Name, likes / posts);
+            likes.put(rank.Name, rank.Likes);
         });
+        
+        // Now iterate over the numer of posts and fill avgLikesPerPost, making
+        // sure to place only nations in avgLikesPerPost that satisfy the minimum
+        // number of posts criterium.
+        region.MostPostsRanks.stream().forEach((rank) -> {
+            if (rank.Posts >= minimumNrOfPosts) {
+                float likesReceived = likes.get(rank.Name);
+                float numberOfPosts = rank.Posts;
+                avgLikesPerPost.put(rank.Name, likesReceived / numberOfPosts);
+            }
+        });                               
 
         // Now sort avgLikesPerPost by the avg likes per post.
         final List<Map.Entry<String, Float>> avgLikesPerPostSorted
@@ -124,7 +130,6 @@ public final class RmbStatistics {
             toReturn += String.format("%s. @%s with %s likes per post on average.%n",
                     i + 1, entry.getKey(), rounded.toString());
         }
-
         return toReturn;
     }
 
