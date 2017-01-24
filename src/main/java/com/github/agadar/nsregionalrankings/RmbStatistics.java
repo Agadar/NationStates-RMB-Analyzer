@@ -254,7 +254,7 @@ public final class RmbStatistics {
             toReturn += mostLikesGiven(r, maxResults);
             toReturn += mostPosts(r, maxResults);
             toReturn += mostLikesPerPost(r, maxResults);
-            toReturn += mostEndorsementsGiven(region, maxResults, epochStart, epochEnd);
+            //toReturn += mostEndorsementsGiven(region, maxResults, epochStart, epochEnd);
             return String.format(toReturn);
         } catch (Exception ex) {
             // Whatever exception is thrown, just return its message.
