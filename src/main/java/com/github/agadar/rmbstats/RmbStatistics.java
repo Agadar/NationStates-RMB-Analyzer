@@ -5,9 +5,15 @@ import com.github.agadar.nsapi.domain.region.MostLikedRank;
 import com.github.agadar.nsapi.domain.region.MostLikesRank;
 import com.github.agadar.nsapi.domain.region.MostPostsRank;
 import com.github.agadar.nsapi.domain.region.Region;
+import com.github.agadar.nsapi.domain.shared.Happening;
+import com.github.agadar.nsapi.domain.world.World;
+import com.github.agadar.nsapi.enums.HapFilter;
 import com.github.agadar.nsapi.enums.shard.RegionShard;
+import com.github.agadar.nsapi.enums.shard.WorldShard;
 import com.github.agadar.nsapi.query.RegionQuery;
+import com.github.agadar.nsapi.query.WorldQuery;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -139,11 +145,56 @@ public final class RmbStatistics {
      *
      * @param region The region to generate a report of.
      * @param maxResults The maximum number of results per list to return.
+     * @param epochStart The lower bound of the timeframe to report on.
+     * @param epochEnd The upper bound of the timeframe to report on.
      * @return The generated report.
      */
-    private static String mostEndorsementsGiven(Region region, int maxResults) {
+    private static String mostEndorsementsGiven(String region, int maxResults, long epochStart, long epochEnd) {
         String toReturn = "%n--------Most Endorsements given--------%n";
-        // TODO: code
+        toReturn += "(Only covers endorsements given during the last 7 days.)%n";
+        List<Happening> endoHappenings = new ArrayList<>();
+        
+        // Retrieve first batch of happenings.
+        WorldQuery worldQuery = NSAPI.world(WorldShard.Happenings).happeningsOfRegion(region)
+                .happeningsSinceTime(epochStart).happeningsBeforeTime(epochEnd)
+                .happeningsFilter(HapFilter.endo);
+        World w = worldQuery.execute();
+
+        // As long as we haven't reached the lower bound date yet, keep iterating
+        // back in time.
+        while (w.Happenings.size() > 0) {
+            endoHappenings.addAll(w.Happenings);    // Add last batch's results to the list.
+            long lastHapId = w.Happenings.get(w.Happenings.size() - 1).Id;  // Get id of oldest happening.
+            // Use the id of the oldest happening to get the next batch of happenings.
+            w = worldQuery.happeningsBeforeId(lastHapId).execute();
+        }
+        
+        final Map<String, Integer> endorsements = new HashMap<>();
+        
+        // Start mapping numbers of endorsements to names.
+        endoHappenings.stream().map((happening) -> 
+                happening.Description.split("@@")).forEach((splitDescription) -> {  
+            // Retrieve the endorsing nation from the happening and whether or
+            // not the nation endorsed a nation or withdrew its endorsement.
+            String nationName = splitDescription[1];
+            int toAdd = !splitDescription[2].contains("withdrew") ? 1 : -1;
+            // Now update the entry in the map.
+            int current = endorsements.getOrDefault(nationName, 0) + toAdd;
+            endorsements.put(nationName, current);
+        });
+        
+        // Now sort endorsements by the values.
+        final List<Map.Entry<String, Integer>> endorsementsSorted
+                = endorsements.entrySet().stream().sorted(
+                        Map.Entry.comparingByValue(Collections.reverseOrder()))
+                .collect(Collectors.toList());
+
+        // Trim the results to maxResults and build the string.
+        for (int i = 0; i < Math.min(endorsementsSorted.size(), maxResults); i++) {
+            final Map.Entry<String, Integer> entry = endorsementsSorted.get(i);
+            toReturn += String.format("%s. @%s with %s endorsements given.%n",
+                    i + 1, entry.getKey(), entry.getValue().toString());
+        }
         return toReturn;
     }
 
@@ -203,7 +254,7 @@ public final class RmbStatistics {
             toReturn += mostLikesGiven(r, maxResults);
             toReturn += mostPosts(r, maxResults);
             toReturn += mostLikesPerPost(r, maxResults);
-            toReturn += mostEndorsementsGiven(r, maxResults);
+            toReturn += mostEndorsementsGiven(region, maxResults, epochStart, epochEnd);
             return String.format(toReturn);
         } catch (Exception ex) {
             // Whatever exception is thrown, just return its message.
