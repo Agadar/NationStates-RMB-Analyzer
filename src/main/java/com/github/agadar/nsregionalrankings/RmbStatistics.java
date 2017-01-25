@@ -116,9 +116,11 @@ public final class RmbStatistics {
         // number of posts criterium.
         region.MostPostsRanks.stream().forEach((rank) -> {
             if (rank.Posts >= minimumNrOfPosts) {
-                float likesReceived = likes.get(rank.Name);
-                float numberOfPosts = rank.Posts;
-                avgLikesPerPost.put(rank.Name, likesReceived / numberOfPosts);
+                if (likes.containsKey(rank.Name)) {
+                    float likesReceived = likes.get(rank.Name);
+                    float numberOfPosts = rank.Posts;
+                    avgLikesPerPost.put(rank.Name, likesReceived / numberOfPosts);
+                }
             }
         });                               
 
@@ -258,6 +260,7 @@ public final class RmbStatistics {
             return String.format(toReturn);
         } catch (Exception ex) {
             // Whatever exception is thrown, just return its message.
+            ex.printStackTrace();
             return ex.getMessage();
         }
     }
