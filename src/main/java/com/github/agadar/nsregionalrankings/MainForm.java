@@ -47,7 +47,7 @@ public class MainForm extends javax.swing.JFrame {
         FTextFieldMaxResults = new javax.swing.JFormattedTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("NationStates Regional Rankings (version 1.0.0)");
+        setTitle("NationStates Regional Rankings (version 1.0.1)");
         setResizable(false);
 
         BtnStart.setText("Build report");
