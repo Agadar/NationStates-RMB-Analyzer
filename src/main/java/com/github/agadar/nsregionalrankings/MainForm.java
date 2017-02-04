@@ -47,7 +47,7 @@ public class MainForm extends javax.swing.JFrame {
         FTextFieldMaxResults = new javax.swing.JFormattedTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("NationStates Regional Rankings (version 1.0.1)");
+        setTitle("NationStates Regional Rankings (version 1.0.2)");
         setResizable(false);
 
         BtnStart.setText("Build report");
@@ -256,24 +256,25 @@ public class MainForm extends javax.swing.JFrame {
             // Create and display the form.
             java.awt.EventQueue.invokeLater(()
                     -> {
-                final MainForm form = new MainForm();
-                form.setLocationRelativeTo(null);
-                form.setVisible(true);
-            });
+                        final MainForm form = new MainForm();
+                        form.setLocationRelativeTo(null);
+                        form.setVisible(true);
+                    });
         } catch (ClassNotFoundException | InstantiationException |
                 IllegalAccessException |
                 UnsupportedLookAndFeelException ex) {
             Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     /**
      * Simple utility function for getting today's date plus one day.
+     *
      * @return Today's date, plus one day.
      */
     private static Date TodayPlusOne() {
-        Calendar c = Calendar.getInstance(); 
-        c.setTime(new Date()); 
+        Calendar c = Calendar.getInstance();
+        c.setTime(new Date());
         c.add(Calendar.DATE, 1);
         return c.getTime();
     }

@@ -1,17 +1,18 @@
 package com.github.agadar.nsregionalrankings;
 
-import com.github.agadar.nsapi.NSAPI;
-import com.github.agadar.nsapi.domain.region.MostLikedRank;
-import com.github.agadar.nsapi.domain.region.MostLikesRank;
-import com.github.agadar.nsapi.domain.region.MostPostsRank;
-import com.github.agadar.nsapi.domain.region.Region;
-import com.github.agadar.nsapi.domain.shared.Happening;
-import com.github.agadar.nsapi.domain.world.World;
-import com.github.agadar.nsapi.enums.HapFilter;
-import com.github.agadar.nsapi.enums.shard.RegionShard;
-import com.github.agadar.nsapi.enums.shard.WorldShard;
-import com.github.agadar.nsapi.query.RegionQuery;
-import com.github.agadar.nsapi.query.WorldQuery;
+import com.github.agadar.nationstates.NationStates;
+import com.github.agadar.nationstates.domain.common.Happening;
+import com.github.agadar.nationstates.domain.region.MostLikedRank;
+import com.github.agadar.nationstates.domain.region.MostLikesRank;
+import com.github.agadar.nationstates.domain.region.MostPostsRank;
+import com.github.agadar.nationstates.domain.region.Region;
+import com.github.agadar.nationstates.domain.world.World;
+import com.github.agadar.nationstates.enumerator.HappeningsFilter;
+import com.github.agadar.nationstates.query.RegionQuery;
+import com.github.agadar.nationstates.query.WorldQuery;
+import com.github.agadar.nationstates.shard.RegionShard;
+import com.github.agadar.nationstates.shard.WorldShard;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,7 +32,7 @@ public final class RmbStatistics {
      * Static initializer that sets up the user agent.
      */
     static {
-        NSAPI.setUserAgent("NationStates RMB Statistics (https://github.com/Agadar/NationStates-RMB-Analyzer)");
+        NationStates.setUserAgent("NationStates RMB Statistics (https://github.com/Agadar/NationStates-RMB-Analyzer)");
     }
 
     /**
@@ -45,10 +46,10 @@ public final class RmbStatistics {
     private static String mostLikesReceived(Region region, int maxResults) {
         String toReturn = "--------Most Likes Received--------%n";
 
-        for (int i = 0; i < Math.min(region.MostLikesRanks.size(), maxResults); i++) {
-            final MostLikesRank rank = region.MostLikesRanks.get(i);
+        for (int i = 0; i < Math.min(region.mostLikesRanks.size(), maxResults); i++) {
+            final MostLikesRank rank = region.mostLikesRanks.get(i);
             toReturn += String.format("%s. @%s with %s likes received.%n", i + 1,
-                    rank.Name, rank.Likes);
+                    rank.name, rank.likes);
         }
         return toReturn;
     }
@@ -64,10 +65,10 @@ public final class RmbStatistics {
     private static String mostLikesGiven(Region region, int maxResults) {
         String toReturn = "%n--------Most Likes Given--------%n";
 
-        for (int i = 0; i < Math.min(region.MostLikedRanks.size(), maxResults); i++) {
-            final MostLikedRank rank = region.MostLikedRanks.get(i);
+        for (int i = 0; i < Math.min(region.mostLikedRanks.size(), maxResults); i++) {
+            final MostLikedRank rank = region.mostLikedRanks.get(i);
             toReturn += String.format("%s. @%s with %s likes given.%n", i + 1,
-                    rank.Name, rank.Liked);
+                    rank.name, rank.liked);
         }
         return toReturn;
     }
@@ -82,10 +83,10 @@ public final class RmbStatistics {
      */
     private static String mostPosts(Region region, int maxResults) {
         String toReturn = "%n--------Most Posts Total--------%n";
-        for (int i = 0; i < Math.min(region.MostPostsRanks.size(), maxResults); i++) {
-            final MostPostsRank rank = region.MostPostsRanks.get(i);
+        for (int i = 0; i < Math.min(region.mostPostsRanks.size(), maxResults); i++) {
+            final MostPostsRank rank = region.mostPostsRanks.get(i);
             toReturn += String.format("%s. @%s with %s posts total.%n", i + 1,
-                    rank.Name, rank.Posts);
+                    rank.name, rank.posts);
         }
         return toReturn;
     }
@@ -100,29 +101,29 @@ public final class RmbStatistics {
      */
     private static String mostLikesPerPost(Region region, int maxResults) {
         final int minimumNrOfPosts = 10;    // The minimum # of posts a nation must have in order
-                                            // to be included in this ranking.                                           
+        // to be included in this ranking.                                           
         String toReturn = "%n--------Most Likes Per Post On Average--------%n";
         toReturn += "(Includes only nations with at least " + minimumNrOfPosts + " posts)%n";
         final Map<String, Integer> likes = new HashMap<>();
         final Map<String, Float> avgLikesPerPost = new HashMap<>();
-        
+
         // Start by mapping the likes.
-        region.MostLikesRanks.stream().forEach((rank) -> {
-            likes.put(rank.Name, rank.Likes);
+        region.mostLikesRanks.stream().forEach((rank) -> {
+            likes.put(rank.name, rank.likes);
         });
-        
+
         // Now iterate over the numer of posts and fill avgLikesPerPost, making
         // sure to place only nations in avgLikesPerPost that satisfy the minimum
         // number of posts criterium.
-        region.MostPostsRanks.stream().forEach((rank) -> {
-            if (rank.Posts >= minimumNrOfPosts) {
-                if (likes.containsKey(rank.Name)) {
-                    float likesReceived = likes.get(rank.Name);
-                    float numberOfPosts = rank.Posts;
-                    avgLikesPerPost.put(rank.Name, likesReceived / numberOfPosts);
+        region.mostPostsRanks.stream().forEach((rank) -> {
+            if (rank.posts >= minimumNrOfPosts) {
+                if (likes.containsKey(rank.name)) {
+                    float likesReceived = likes.get(rank.name);
+                    float numberOfPosts = rank.posts;
+                    avgLikesPerPost.put(rank.name, likesReceived / numberOfPosts);
                 }
             }
-        });                               
+        });
 
         // Now sort avgLikesPerPost by the avg likes per post.
         final List<Map.Entry<String, Float>> avgLikesPerPostSorted
@@ -155,36 +156,36 @@ public final class RmbStatistics {
         String toReturn = "%n--------Most Endorsements given--------%n";
         toReturn += "(Only covers endorsements given during the last 7 days.)%n";
         List<Happening> endoHappenings = new ArrayList<>();
-        
+
         // Retrieve first batch of happenings.
-        WorldQuery worldQuery = NSAPI.world(WorldShard.Happenings).happeningsOfRegion(region)
+        WorldQuery worldQuery = NationStates.world(WorldShard.HAPPENINGS).happeningsOfRegion(region)
                 .happeningsSinceTime(epochStart).happeningsBeforeTime(epochEnd)
-                .happeningsFilter(HapFilter.endo);
+                .happeningsFilter(HappeningsFilter.ENDORSEMENT);
         World w = worldQuery.execute();
 
         // As long as we haven't reached the lower bound date yet, keep iterating
         // back in time.
-        while (w.Happenings.size() > 0) {
-            endoHappenings.addAll(w.Happenings);    // Add last batch's results to the list.
-            long lastHapId = w.Happenings.get(w.Happenings.size() - 1).Id;  // Get id of oldest happening.
+        while (w.happenings.size() > 0) {
+            endoHappenings.addAll(w.happenings);    // Add last batch's results to the list.
+            long lastHapId = w.happenings.get(w.happenings.size() - 1).id;  // Get id of oldest happening.
             // Use the id of the oldest happening to get the next batch of happenings.
             w = worldQuery.happeningsBeforeId(lastHapId).execute();
         }
-        
+
         final Map<String, Integer> endorsements = new HashMap<>();
-        
+
         // Start mapping numbers of endorsements to names.
-        endoHappenings.stream().map((happening) -> 
-                happening.Description.split("@@")).forEach((splitDescription) -> {  
+        endoHappenings.stream().map((happening)
+                -> happening.description.split("@@")).forEach((splitDescription) -> {
             // Retrieve the endorsing nation from the happening and whether or
-            // not the nation endorsed a nation or withdrew its endorsement.
-            String nationName = splitDescription[1];
-            int toAdd = !splitDescription[2].contains("withdrew") ? 1 : -1;
-            // Now update the entry in the map.
-            int current = endorsements.getOrDefault(nationName, 0) + toAdd;
-            endorsements.put(nationName, current);
-        });
-        
+                    // not the nation endorsed a nation or withdrew its endorsement.
+                    String nationName = splitDescription[1];
+                    int toAdd = !splitDescription[2].contains("withdrew") ? 1 : -1;
+                    // Now update the entry in the map.
+                    int current = endorsements.getOrDefault(nationName, 0) + toAdd;
+                    endorsements.put(nationName, current);
+                });
+
         // Now sort endorsements by the values.
         final List<Map.Entry<String, Integer>> endorsementsSorted
                 = endorsements.entrySet().stream().sorted(
@@ -228,8 +229,8 @@ public final class RmbStatistics {
             }
 
             // Start preparing query.
-            final RegionQuery q = NSAPI.region(region).shards(RegionShard.MostLiked,
-                    RegionShard.MostLikes, RegionShard.MostPosts);
+            final RegionQuery q = NationStates.region(region).shards(RegionShard.MOST_LIKED,
+                    RegionShard.MOST_LIKES, RegionShard.MOST_POSTS);
 
             if (maxResults < 1) {
                 maxResults = 1;
