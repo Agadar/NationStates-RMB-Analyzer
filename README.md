@@ -14,4 +14,4 @@ This program uses my own [NationStates API Java Wrapper](https://github.com/Agad
 
 ## Screenshot
 
-![images/Screenshot Regional Rankings GUI.png](images/Screenshot Regional Rankings GUI.png)
+![Screenshot](https://github.com/Agadar/NationStates-Regional-Rankings/blob/master/images/Screenshot%20Regional%20Rankings%20GUI.png)
