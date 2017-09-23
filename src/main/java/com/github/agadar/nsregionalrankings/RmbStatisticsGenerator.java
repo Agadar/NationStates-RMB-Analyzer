@@ -9,7 +9,6 @@ import com.github.agadar.nationstates.query.RegionQuery;
 import com.github.agadar.nationstates.shard.RegionShard;
 
 import java.math.BigDecimal;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -91,38 +90,33 @@ public final class RmbStatisticsGenerator {
         String toReturn = "%n--------Most Likes Per Post On Average--------%n";
         toReturn += "(Includes only nations with at least " + minimumNrOfPostsRequired + " posts)%n";
         final Map<String, Integer> likes = new HashMap<>();
-        final Map<String, Float> avgLikesPerPost = new HashMap<>();
 
-        // Start by mapping the likes.
         region.mostLikesRanks.stream().forEach((rank) -> {
             likes.put(rank.name, rank.likes);
         });
-
-        // Now iterate over the number of posts and fill avgLikesPerPost, making
-        // sure to place only nations in avgLikesPerPost that satisfy the minimum
-        // number of posts criterium.
-        region.mostPostsRanks.stream()
+        
+        final List<Pair<String, Float>> ranks = region.mostPostsRanks
+                .stream()
                 .filter((rank) -> rank.posts >= minimumNrOfPostsRequired)
                 .filter((rank) -> likes.containsKey(rank.name))
-                .forEach((rank) -> {
-                    float likesReceived = likes.get(rank.name);
-                    float numberOfPosts = rank.posts;
-                    avgLikesPerPost.put(rank.name, likesReceived / numberOfPosts);
-                });
+                .map((rank) -> {
+                    final float likesReceived = likes.get(rank.name);
+                    final float numberOfPosts = rank.posts;
+                    return new Pair<>(rank.name, likesReceived / numberOfPosts);
+                })
+                .sorted((rankLeft, rankRight) -> {
+                    final int compare = Float.compare(rankRight.b, rankLeft.b);
+                    return compare == 0 ? (rankLeft.a).compareTo(rankRight.a) : compare;
+                })
+                .limit(maxResults)
+                .collect(Collectors.toList());
 
-        // Now sort avgLikesPerPost by the avg likes per post.
-        final List<Map.Entry<String, Float>> avgLikesPerPostSorted
-                = avgLikesPerPost.entrySet().stream().sorted(
-                        Map.Entry.comparingByValue(Collections.reverseOrder()))
-                        .collect(Collectors.toList());
-
-        // Trim the results to maxResults and build the string.
-        for (int i = 0; i < Math.min(avgLikesPerPostSorted.size(), maxResults); i++) {
-            final Map.Entry<String, Float> entry = avgLikesPerPostSorted.get(i);
-            BigDecimal rounded = new BigDecimal(Float.toString(entry.getValue()));
+        for (int i = 0; i < ranks.size(); i++) {
+            final Pair<String, Float> rank = ranks.get(i);
+            BigDecimal rounded = new BigDecimal(Float.toString(rank.b));
             rounded = rounded.setScale(2, BigDecimal.ROUND_HALF_UP);
             toReturn += String.format("%s. %s with %s likes per post on average.%n",
-                    i + 1, wrapInNationTags(entry.getKey()), rounded.toString());
+                    i + 1, wrapInNationTags(rank.a), rounded.toString());
         }
         return toReturn;
     }
