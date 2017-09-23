@@ -48,8 +48,8 @@ public final class RmbStatistics {
 
         for (int i = 0; i < Math.min(region.mostLikesRanks.size(), maxResults); i++) {
             final MostLikesRank rank = region.mostLikesRanks.get(i);
-            toReturn += String.format("%s. @%s with %s likes received.%n", i + 1,
-                    rank.name, rank.likes);
+            toReturn += String.format("%s. %s with %s likes received.%n", i + 1,
+                    wrapInNationTags(rank.name), rank.likes);
         }
         return toReturn;
     }
@@ -67,8 +67,8 @@ public final class RmbStatistics {
 
         for (int i = 0; i < Math.min(region.mostLikedRanks.size(), maxResults); i++) {
             final MostLikedRank rank = region.mostLikedRanks.get(i);
-            toReturn += String.format("%s. @%s with %s likes given.%n", i + 1,
-                    rank.name, rank.liked);
+            toReturn += String.format("%s. %s with %s likes given.%n", i + 1,
+                    wrapInNationTags(rank.name), rank.liked);
         }
         return toReturn;
     }
@@ -85,8 +85,8 @@ public final class RmbStatistics {
         String toReturn = "%n--------Most Posts Total--------%n";
         for (int i = 0; i < Math.min(region.mostPostsRanks.size(), maxResults); i++) {
             final MostPostsRank rank = region.mostPostsRanks.get(i);
-            toReturn += String.format("%s. @%s with %s posts total.%n", i + 1,
-                    rank.name, rank.posts);
+            toReturn += String.format("%s. %s with %s posts total.%n", i + 1,
+                    wrapInNationTags(rank.name), rank.posts);
         }
         return toReturn;
     }
@@ -112,7 +112,7 @@ public final class RmbStatistics {
             likes.put(rank.name, rank.likes);
         });
 
-        // Now iterate over the numer of posts and fill avgLikesPerPost, making
+        // Now iterate over the number of posts and fill avgLikesPerPost, making
         // sure to place only nations in avgLikesPerPost that satisfy the minimum
         // number of posts criterium.
         region.mostPostsRanks.stream().forEach((rank) -> {
@@ -136,8 +136,8 @@ public final class RmbStatistics {
             final Map.Entry<String, Float> entry = avgLikesPerPostSorted.get(i);
             BigDecimal rounded = new BigDecimal(Float.toString(entry.getValue()));
             rounded = rounded.setScale(2, BigDecimal.ROUND_HALF_UP);
-            toReturn += String.format("%s. @%s with %s likes per post on average.%n",
-                    i + 1, entry.getKey(), rounded.toString());
+            toReturn += String.format("%s. %s with %s likes per post on average.%n",
+                    i + 1, wrapInNationTags(entry.getKey()), rounded.toString());
         }
         return toReturn;
     }
@@ -148,8 +148,8 @@ public final class RmbStatistics {
      *
      * @param region The region to generate a report of.
      * @param maxResults The maximum number of results per list to return.
-     * @param epochStart The lower bound of the timeframe to report on.
-     * @param epochEnd The upper bound of the timeframe to report on.
+     * @param epochStart The lower bound of the time frame to report on.
+     * @param epochEnd The upper bound of the time frame to report on.
      * @return The generated report.
      */
     private static String mostEndorsementsGiven(String region, int maxResults, long epochStart, long epochEnd) {
@@ -195,12 +195,16 @@ public final class RmbStatistics {
         // Trim the results to maxResults and build the string.
         for (int i = 0; i < Math.min(endorsementsSorted.size(), maxResults); i++) {
             final Map.Entry<String, Integer> entry = endorsementsSorted.get(i);
-            toReturn += String.format("%s. @%s with %s endorsements given.%n",
-                    i + 1, entry.getKey(), entry.getValue().toString());
+            toReturn += String.format("%s. %s with %s endorsements given.%n",
+                    i + 1, wrapInNationTags(entry.getKey()), entry.getValue().toString());
         }
         return toReturn;
     }
 
+    private static String wrapInNationTags(String nationName) {
+        return String.format("[nation]%s[/nation]", nationName);
+    }
+    
     /**
      * Generates a report containing the rankings of the nations with: - the
      * most RMB post likes received; - the most RMB post likes given; - the most
