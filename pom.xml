@@ -5,7 +5,7 @@
     <!-- General properties -->
     <groupId>com.github.agadar</groupId>
     <artifactId>nationstates-regional-rankings</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
     <packaging>jar</packaging>   
     <name>NationStates Regional Rankings</name>
     <description>Generates nation rankings based on a region's statistics, mostly pertaining its message board.</description>
@@ -59,7 +59,7 @@
                             </descriptorRefs>
                             <archive>
                                 <manifest>
-                                    <mainClass>com.github.agadar.nsregionalrankings.MainForm</mainClass>
+                                    <mainClass>com.github.agadar.nsregionalrankings.Main</mainClass>
                                 </manifest>
                             </archive>
                         </configuration>

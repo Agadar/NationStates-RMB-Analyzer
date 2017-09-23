@@ -3,24 +3,19 @@ package com.github.agadar.nsregionalrankings;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
+
 import java.util.Calendar;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 
 /**
- * NationStates RMB Statistics application entry point and main GUI.
- *
  * @author Agadar <https://github.com/Agadar/>
  */
-public class MainForm extends javax.swing.JFrame {
+public class RmbStatisticsForm extends javax.swing.JFrame {
 
-    /**
-     * Creates new form EmbassyCheckerForm
-     */
-    public MainForm() {
+    private final RmbStatisticsGenerator rmbStatsGenerator;
+
+    public RmbStatisticsForm(RmbStatisticsGenerator rmbStatsGenerator) {
+        this.rmbStatsGenerator = rmbStatsGenerator;
         initComponents();
     }
 
@@ -47,7 +42,7 @@ public class MainForm extends javax.swing.JFrame {
         FTextFieldMaxResults = new javax.swing.JFormattedTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("NationStates Regional Rankings (version 1.0.2)");
+        setTitle("NationStates Regional Rankings (version 1.0.3)");
         setResizable(false);
 
         BtnStart.setText("Build report");
@@ -229,7 +224,7 @@ public class MainForm extends javax.swing.JFrame {
         final long epochFrom = ((Date) FTextFieldFromDate.getValue()).toInstant().toEpochMilli() / 1000;
         final long epochTo = ((Date) FTextFieldToDate.getValue()).toInstant().toEpochMilli() / 1000;
         final int maxResults = (int) Math.abs((long) FTextFieldMaxResults.getValue());
-        TxtAreaReport.setText(RmbStatistics.generateReport(region, maxResults, epochFrom, epochTo));
+        TxtAreaReport.setText(rmbStatsGenerator.generateReport(region, maxResults, epochFrom, epochTo));
     }//GEN-LAST:event_BtnStartActionPerformed
 
     /**
@@ -243,29 +238,6 @@ public class MainForm extends javax.swing.JFrame {
         final StringSelection strSel = new StringSelection(TxtAreaReport.getText());
         clipboard.setContents(strSel, strSel);
     }//GEN-LAST:event_TxtAreaReportMousePressed
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        // Set-up graphical form.      
-        try {
-            // Set cross-platform look&feel.
-            UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-
-            // Create and display the form.
-            java.awt.EventQueue.invokeLater(()
-                    -> {
-                        final MainForm form = new MainForm();
-                        form.setLocationRelativeTo(null);
-                        form.setVisible(true);
-                    });
-        } catch (ClassNotFoundException | InstantiationException |
-                IllegalAccessException |
-                UnsupportedLookAndFeelException ex) {
-            Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
 
     /**
      * Simple utility function for getting today's date plus one day.
