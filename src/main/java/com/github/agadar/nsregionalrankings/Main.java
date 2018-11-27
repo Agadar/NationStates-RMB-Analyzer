@@ -11,18 +11,21 @@ import javax.swing.UnsupportedLookAndFeelException;
  */
 public class Main {
 
+    private static final String USER_AGENT = "NationStates RMB Statistics (https://github.com/Agadar/NationStates-RMB-Analyzer)";
+
     public static void main(String[] args) {
         try {
-            NationStates.setUserAgent("NationStates RMB Statistics (https://github.com/Agadar/NationStates-RMB-Analyzer)");
-            final RmbStatisticsGenerator rmbStatsGen = new RmbStatisticsGenerator();
+            var nationStates = new NationStates(USER_AGENT);
+            var rmbStatsGen = new RmbStatisticsGenerator(nationStates);
+
             UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
             java.awt.EventQueue.invokeLater(() -> {
-                final RmbStatisticsForm form = new RmbStatisticsForm(rmbStatsGen);
+                var form = new RmbStatisticsForm(rmbStatsGen);
                 form.setLocationRelativeTo(null);
                 form.setVisible(true);
             });
-        } catch (ClassNotFoundException | InstantiationException
-                | IllegalAccessException | UnsupportedLookAndFeelException ex) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+                | UnsupportedLookAndFeelException ex) {
             Logger.getLogger(RmbStatisticsForm.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
