@@ -3,15 +3,10 @@ package com.github.agadar.nsregionalrankings;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.github.agadar.nationstates.INationStates;
-import com.github.agadar.nationstates.domain.region.MostLikedRank;
-import com.github.agadar.nationstates.domain.region.MostLikesRank;
-import com.github.agadar.nationstates.domain.region.MostPostsRank;
 import com.github.agadar.nationstates.domain.region.Region;
 import com.github.agadar.nationstates.shard.RegionShard;
 
@@ -44,10 +39,10 @@ public final class RmbStatisticsGenerator {
     private String mostLikesReceived(Region region, int maxResults) {
         String toReturn = "--------Most Likes Received--------%n";
 
-        for (int i = 0; i < Math.min(region.mostLikesRanks.size(), maxResults); i++) {
-            final MostLikesRank rank = region.mostLikesRanks.get(i);
-            toReturn += String.format("%s. %s with %s likes received.%n", i + 1, wrapInNationTags(rank.name),
-                    rank.likes);
+        for (int i = 0; i < Math.min(region.getMostLikesRanks().size(), maxResults); i++) {
+            var rank = region.getMostLikesRanks().get(i);
+            toReturn += String.format("%s. %s with %s likes received.%n", i + 1, wrapInNationTags(rank.getName()),
+                    rank.getLikes());
         }
         return toReturn;
     }
@@ -63,10 +58,10 @@ public final class RmbStatisticsGenerator {
     private String mostLikesGiven(Region region, int maxResults) {
         String generatedString = "%n--------Most Likes Given--------%n";
 
-        for (int i = 0; i < Math.min(region.mostLikedRanks.size(), maxResults); i++) {
-            final MostLikedRank rank = region.mostLikedRanks.get(i);
-            generatedString += String.format("%s. %s with %s likes given.%n", i + 1, wrapInNationTags(rank.name),
-                    rank.liked);
+        for (int i = 0; i < Math.min(region.getMostLikedRanks().size(), maxResults); i++) {
+            var rank = region.getMostLikedRanks().get(i);
+            generatedString += String.format("%s. %s with %s likes given.%n", i + 1, wrapInNationTags(rank.getName()),
+                    rank.getLiked());
         }
         return generatedString;
     }
@@ -81,9 +76,10 @@ public final class RmbStatisticsGenerator {
      */
     private String mostPosts(Region region, int maxResults) {
         String toReturn = "%n--------Most Posts Total--------%n";
-        for (int i = 0; i < Math.min(region.mostPostsRanks.size(), maxResults); i++) {
-            final MostPostsRank rank = region.mostPostsRanks.get(i);
-            toReturn += String.format("%s. %s with %s posts total.%n", i + 1, wrapInNationTags(rank.name), rank.posts);
+        for (int i = 0; i < Math.min(region.getMostPostsRanks().size(), maxResults); i++) {
+            var rank = region.getMostPostsRanks().get(i);
+            toReturn += String.format("%s. %s with %s posts total.%n", i + 1, wrapInNationTags(rank.getName()),
+                    rank.getPosts());
         }
         return toReturn;
     }
@@ -97,28 +93,28 @@ public final class RmbStatisticsGenerator {
      * @return The generated report.
      */
     private String mostLikesPerPost(Region region, int maxResults) {
-        final int minimumNrOfPostsRequired = 10;
+        int minimumNrOfPostsRequired = 10;
         String toReturn = "%n--------Most Likes Per Post On Average--------%n";
         toReturn += "(Includes only nations with at least " + minimumNrOfPostsRequired + " posts)%n";
-        final Map<String, Integer> likes = new HashMap<>();
+        var likes = new HashMap<String, Integer>();
 
-        region.mostLikesRanks.stream().forEach((rank) -> {
-            likes.put(rank.name, rank.likes);
+        region.getMostLikesRanks().stream().forEach((rank) -> {
+            likes.put(rank.getName(), rank.getLikes());
         });
 
-        final List<Pair<String, Float>> ranks = region.mostPostsRanks.stream()
-                .filter((rank) -> rank.posts >= minimumNrOfPostsRequired).filter((rank) -> likes.containsKey(rank.name))
-                .map((rank) -> {
-                    final float likesReceived = likes.get(rank.name);
-                    final float numberOfPosts = rank.posts;
-                    return new Pair<>(rank.name, likesReceived / numberOfPosts);
+        var ranks = region.getMostPostsRanks().stream()
+                .filter((rank) -> rank.getPosts() >= minimumNrOfPostsRequired)
+                .filter((rank) -> likes.containsKey(rank.getName())).map((rank) -> {
+                    float likesReceived = likes.get(rank.getName());
+                    float numberOfPosts = rank.getPosts();
+                    return new Pair<>(rank.getName(), likesReceived / numberOfPosts);
                 }).sorted((rankLeft, rankRight) -> {
-                    final int compare = Float.compare(rankRight.b, rankLeft.b);
+                    int compare = Float.compare(rankRight.b, rankLeft.b);
                     return compare == 0 ? (rankLeft.a).compareTo(rankRight.a) : compare;
                 }).limit(maxResults).collect(Collectors.toList());
 
         for (int i = 0; i < ranks.size(); i++) {
-            final Pair<String, Float> rank = ranks.get(i);
+            var rank = ranks.get(i);
             BigDecimal rounded = new BigDecimal(Float.toString(rank.b));
             rounded = rounded.setScale(2, RoundingMode.HALF_UP);
             toReturn += String.format("%s. %s with %s likes per post on average.%n", i + 1, wrapInNationTags(rank.a),
