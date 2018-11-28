@@ -3,7 +3,6 @@ package com.github.agadar.nsregionalrankings;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.HashMap;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.github.agadar.nationstates.INationStates;
@@ -102,8 +101,7 @@ public final class RmbStatisticsGenerator {
             likes.put(rank.getName(), rank.getLikes());
         });
 
-        var ranks = region.getMostPostsRanks().stream()
-                .filter((rank) -> rank.getPosts() >= minimumNrOfPostsRequired)
+        var ranks = region.getMostPostsRanks().stream().filter((rank) -> rank.getPosts() >= minimumNrOfPostsRequired)
                 .filter((rank) -> likes.containsKey(rank.getName())).map((rank) -> {
                     float likesReceived = likes.get(rank.getName());
                     float numberOfPosts = rank.getPosts();
@@ -162,17 +160,12 @@ public final class RmbStatisticsGenerator {
             regionQuery.postsTo(epochEnd);
         }
 
-        Optional<Region> regionQueryResultOptional;
+        Region regionQueryResult;
         try {
-            regionQueryResultOptional = regionQuery.execute();
+            regionQueryResult = regionQuery.execute();
         } catch (Exception ex) {
             return ex.getMessage();
         }
-
-        if (regionQueryResultOptional.isEmpty()) {
-            return "Region does not exist!";
-        }
-        var regionQueryResult = regionQueryResultOptional.get();
 
         String toReturn = mostLikesReceived(regionQueryResult, maxResults);
         toReturn += mostLikesGiven(regionQueryResult, maxResults);
