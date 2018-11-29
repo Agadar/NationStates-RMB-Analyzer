@@ -37,7 +37,7 @@ public class RmbStatisticsForm extends javax.swing.JFrame {
         FTextFieldMaxResults = new javax.swing.JFormattedTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("NationStates Regional Rankings (version 1.1.0)");
+        setTitle("NationStates Regional Rankings (version 2.0.0)");
         setResizable(false);
 
         BtnStart.setText("Build report");
