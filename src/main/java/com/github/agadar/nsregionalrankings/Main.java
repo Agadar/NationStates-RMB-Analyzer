@@ -1,6 +1,6 @@
 package com.github.agadar.nsregionalrankings;
 
-import com.github.agadar.nationstates.NationStates;
+import com.github.agadar.nationstates.DefaultNationStatesImpl;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.UIManager;
@@ -15,7 +15,7 @@ public class Main {
 
     public static void main(String[] args) {
         try {
-            var nationStates = new NationStates(USER_AGENT);
+            var nationStates = new DefaultNationStatesImpl(USER_AGENT);
             var rmbStatsGen = new RmbStatisticsGenerator(nationStates);
 
             UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());

@@ -5,7 +5,7 @@ import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.stream.Collectors;
 
-import com.github.agadar.nationstates.INationStates;
+import com.github.agadar.nationstates.NationStates;
 import com.github.agadar.nationstates.domain.region.Region;
 import com.github.agadar.nationstates.shard.RegionShard;
 
@@ -16,14 +16,14 @@ import com.github.agadar.nationstates.shard.RegionShard;
  */
 public final class RmbStatisticsGenerator {
 
-    private final INationStates nationStates;
+    private final NationStates nationStates;
 
     /**
      * Constructor.
      * 
      * @param nationStates The underlying NationStates agent to use.
      */
-    public RmbStatisticsGenerator(INationStates nationStates) {
+    public RmbStatisticsGenerator(NationStates nationStates) {
         this.nationStates = nationStates;
     }
 
